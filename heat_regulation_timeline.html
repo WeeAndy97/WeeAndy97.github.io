@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heat Network Regulation — Ofgem Timeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inconsolata:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0c14;
+    --surface: #141220;
+    --surface2: #1a1726;
+    --border: #252233;
+    --border2: #302d42;
+    --text: #e8e4f0;
+    --text2: #9891b0;
+    --muted: #5a5470;
+    --accent: #c084fc;
+    --accent2: #a855f7;
+    --green: #34d399;
+    --amber: #fbbf24;
+    --red: #f87171;
+    --blue: #60a5fa;
+    --past: #4a4560;
+    --now-line: #c084fc;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inconsolata', monospace;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    padding: 2rem 2.5rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background: linear-gradient(180deg, #110f1c 0%, var(--bg) 100%);
+  }
+
+  .eyebrow {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--text);
+  }
+
+  h1 em { font-style: italic; color: var(--text2); }
+
+  .header-right {
+    font-size: 0.62rem;
+    color: var(--muted);
+    line-height: 1.8;
+    text-align: right;
+  }
+
+  .now-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.6rem;
+    color: var(--accent);
+    border: 1px solid var(--accent2);
+    padding: 0.25rem 0.6rem;
+    letter-spacing: 0.1em;
+  }
+
+  .now-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* FILTER BAR */
+  .filter-bar {
+    padding: 1rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: 0.5rem;
+  }
+
+  .filter-btn {
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text2);
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.65rem;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.15s;
+  }
+
+  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .filter-btn.active { background: var(--accent2); border-color: var(--accent2); color: white; }
+
+  /* MAIN LAYOUT */
+  .main { padding: 2rem 2.5rem; }
+
+  /* TIMELINE TRACK */
+  .timeline-wrap {
+    position: relative;
+    margin-bottom: 3rem;
+  }
+
+  /* YEAR RULER */
+  .year-ruler {
+    display: flex;
+    border-bottom: 1px solid var(--border2);
+    margin-bottom: 0;
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+
+  .year-mark {
+    flex: 1;
+    text-align: center;
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    position: relative;
+  }
+
+  .year-mark::before {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 6px;
+    background: var(--border2);
+  }
+
+  .year-mark.current { color: var(--accent); font-weight: 500; }
+
+  /* TRACK ROWS */
+  .track-section {
+    margin-bottom: 2rem;
+  }
+
+  .track-section-title {
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .track-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .track-row {
+    display: flex;
+    align-items: stretch;
+    min-height: 52px;
+    margin-bottom: 3px;
+    position: relative;
+  }
+
+  .track-label {
+    width: 200px;
+    flex-shrink: 0;
+    font-size: 0.62rem;
+    color: var(--text2);
+    padding-right: 1rem;
+    display: flex;
+    align-items: center;
+    line-height: 1.3;
+  }
+
+  .track-body {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    position: relative;
+    min-height: 48px;
+    overflow: visible;
+  }
+
+  /* NOW LINE */
+  .now-line {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    background: var(--now-line);
+    opacity: 0.6;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .now-line-label {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.55rem;
+    color: var(--accent);
+    white-space: nowrap;
+    letter-spacing: 0.1em;
+  }
+
+  /* EVENTS */
+  .event-bar {
+    position: absolute;
+    top: 8px;
+    height: 32px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-size: 0.58rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    transition: opacity 0.15s, filter 0.15s;
+    z-index: 5;
+  }
+
+  .event-bar:hover { filter: brightness(1.2); z-index: 20; }
+
+  .event-bar.past { background: var(--past); color: #8a8499; }
+  .event-bar.active-now { background: #3b1f6b; border: 1px solid var(--accent2); color: var(--accent); }
+  .event-bar.upcoming { background: #1a3050; border: 1px solid #2d5a8c; color: var(--blue); }
+  .event-bar.milestone { background: #2d4a20; border: 1px solid #4a7a32; color: var(--green); width: auto !important; padding: 0 0.6rem; }
+  .event-bar.warning { background: #4a3010; border: 1px solid #8a6020; color: var(--amber); }
+  .event-bar.critical { background: #4a1010; border: 1px solid #8a2020; color: var(--red); }
+
+  /* TOOLTIP */
+  .tooltip {
+    display: none;
+    position: fixed;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-left: 3px solid var(--accent);
+    padding: 1rem;
+    font-size: 0.65rem;
+    max-width: 320px;
+    z-index: 1000;
+    line-height: 1.7;
+    pointer-events: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+
+  .tooltip.visible { display: block; }
+
+  .tooltip-title {
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .tooltip-date {
+    color: var(--accent);
+    font-size: 0.6rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .tooltip-body { color: var(--text2); }
+
+  .tooltip-tags {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+  }
+
+  .tooltip-tag {
+    font-size: 0.55rem;
+    padding: 0.15rem 0.4rem;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 0.6rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text2);
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 1px;
+  }
+
+  /* DETAIL PANEL */
+  .detail-section {
+    margin-top: 2rem;
+  }
+
+  .detail-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .detail-card {
+    background: var(--surface);
+    padding: 1.25rem;
+  }
+
+  .detail-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+  }
+
+  .detail-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.3;
+    flex: 1;
+    padding-right: 0.5rem;
+  }
+
+  .detail-status {
+    font-size: 0.55rem;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid;
+    white-space: nowrap;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .detail-status.live { border-color: var(--green); color: var(--green); }
+  .detail-status.upcoming { border-color: var(--blue); color: var(--blue); }
+  .detail-status.consultation { border-color: var(--amber); color: var(--amber); }
+  .detail-status.proposed { border-color: var(--muted); color: var(--muted); }
+
+  .detail-meta {
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.05em;
+  }
+
+  .detail-body {
+    font-size: 0.65rem;
+    color: var(--text2);
+    line-height: 1.7;
+    margin-bottom: 0.75rem;
+  }
+
+  .detail-implications {
+    font-size: 0.62rem;
+    color: var(--text2);
+    border-top: 1px solid var(--border);
+    padding-top: 0.6rem;
+  }
+
+  .detail-implications strong { color: var(--accent); }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1rem 2.5rem;
+    font-size: 0.58rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="eyebrow">Ofgem Heat Network Regulation · Timeline Tracker</div>
+    <h1>Heat Network <em>Regulatory Framework</em></h1>
+  </div>
+  <div class="header-right">
+    <div class="now-badge"><span class="now-dot"></span>Current: March 2026</div><br>
+    Last Mile Asset Management · Internal Reference
+  </div>
+</header>
+
+<div class="filter-bar">
+  <span class="filter-label">Filter</span>
+  <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+  <button class="filter-btn" onclick="setFilter('consumer', this)">Consumer Protection</button>
+  <button class="filter-btn" onclick="setFilter('zoning', this)">Zoning</button>
+  <button class="filter-btn" onclick="setFilter('technical', this)">Technical Standards</button>
+  <button class="filter-btn" onclick="setFilter('financial', this)">Financial / RAB</button>
+  <button class="filter-btn" onclick="setFilter('scotland', this)">Scotland (LHEES)</button>
+</div>
+
+<div class="main">
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--past)"></div> Past / Complete</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3b1f6b; border:1px solid var(--accent2)"></div> Active Now</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1a3050; border:1px solid #2d5a8c"></div> Upcoming</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#2d4a20; border:1px solid #4a7a32"></div> Key Milestone</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#4a3010; border:1px solid #8a6020"></div> Risk / Deadline</div>
+  </div>
+
+  <div id="timeline-wrap" class="timeline-wrap"></div>
+
+  <div class="detail-section">
+    <div class="track-section-title">Key Regulatory Items — Detail</div>
+    <div class="detail-cards" id="detail-cards"></div>
+  </div>
+
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<footer>LMAM Internal Reference · Ofgem Heat Network Regulation Timeline · Not for external distribution · Always verify against current Ofgem publications</footer>
+
+<script>
+// ====================================================
+// DATA
+// ====================================================
+const START_YEAR = 2020;
+const END_YEAR = 2030;
+const CURRENT_DATE = 2026.2; // March 2026
+
+const tracks = [
+  {
+    section: 'Consumer Protection & Authorisation',
+    rows: [
+      {
+        label: 'Heat Trust (Voluntary)',
+        events: [
+          { label: 'Heat Trust Scheme active', start: 2020, end: 2024, type: 'past', cat: 'consumer',
+            detail: 'The Heat Trust was a voluntary customer protection scheme for heat networks. Provided dispute resolution, minimum service standards, and customer charter obligations.',
+            implications: 'Operators who were Heat Trust members needed to transition to Ofgem authorisation from Oct 2024.' }
+        ]
+      },
+      {
+        label: 'Ofgem Authorisation',
+        events: [
+          { label: 'Market investigation (CMA)', start: 2018, end: 2021, type: 'past', cat: 'consumer',
+            detail: 'CMA market study found heat network customers were poorly protected and recommended statutory regulation.',
+            implications: 'Triggered Energy White Paper commitment to Ofgem regulation.' },
+          { label: 'BEIS consultation', start: 2021, end: 2022, type: 'past', cat: 'consumer',
+            detail: 'BEIS consulted on regulatory framework design — consumer protection, standards, redress.',
+            implications: 'Confirmed Ofgem as regulator; voluntary to statutory transition pathway set.' },
+          { label: 'Energy Act 2023 — Powers granted', start: 2023.5, end: 2023.8, type: 'milestone', cat: 'consumer',
+            detail: 'Energy Act 2023 received Royal Assent, granting Ofgem powers to regulate heat networks.',
+            implications: 'Legal foundation for all subsequent heat network regulation. Key date: August 2023.' },
+          { label: 'Ofgem regulation live', start: 2024.75, end: 2026.2, type: 'active-now', cat: 'consumer',
+            detail: 'Ofgem took over heat network regulation from October 2024. Operators required to apply for authorisation. Consumer protection obligations now statutory.',
+            implications: 'LMAM must ensure all heat network operations are Ofgem-authorised. Consumer protection charter, metering standards, complaints handling all apply.' },
+          { label: 'Full authorisation regime', start: 2026.2, end: 2027.5, type: 'upcoming', cat: 'consumer',
+            detail: 'Ofgem\'s full authorisation regime including licence conditions expected to be fully bedded in through 2026-27.',
+            implications: 'Ongoing compliance obligations; price transparency requirements; possible price cap powers for Ofgem in future.' }
+        ]
+      },
+      {
+        label: 'Consumer Price Controls',
+        events: [
+          { label: 'Price transparency obligations', start: 2024.75, end: 2030, type: 'active-now', cat: 'consumer',
+            detail: 'Heat suppliers must disclose tariff structures, standing charges, and unit rates in a standardised format.',
+            implications: 'LMAM HSA pricing must be clearly disclosed. Reputational and regulatory risk if pricing appears unfair.' },
+          { label: 'Potential price cap powers (TBC)', start: 2027, end: 2029, type: 'warning', cat: 'consumer',
+            detail: 'Ofgem has indicated it may seek powers to cap standing charges if consumer harm is evidenced. Consultation expected 2026-27.',
+            implications: 'Risk to LMAM\'s standing charge revenue model if caps introduced. Monitor Ofgem consultations closely.' }
+        ]
+      }
+    ]
+  },
+  {
+    section: 'Heat Network Zoning',
+    rows: [
+      {
+        label: 'Zoning Policy Development',
+        events: [
+          { label: 'HN Zoning consultation (BEIS)', start: 2022, end: 2023, type: 'past', cat: 'zoning',
+            detail: 'Government consulted on mandatory heat network zones where connection would be required for new and existing buildings.',
+            implications: 'Zones would create captive customer base for heat network operators — significant commercial upside.' },
+          { label: 'Zoning framework in Energy Act', start: 2023.5, end: 2023.8, type: 'milestone', cat: 'zoning',
+            detail: 'Energy Act 2023 includes enabling powers for heat network zoning by local authorities.',
+            implications: 'Powers exist; secondary legislation and guidance needed before zones can be designated.' },
+          { label: 'Zoning guidance & pilots', start: 2024, end: 2026.2, type: 'active-now', cat: 'zoning',
+            detail: 'DESNZ developing zoning guidance. Pilot zones expected in selected local authorities.',
+            implications: 'LMAM should monitor pilot zone designations in areas of operational interest. Early engagement with LAs is advantageous.' },
+          { label: 'First mandatory zones designable', start: 2026, end: 2028, type: 'upcoming', cat: 'zoning',
+            detail: 'Subject to secondary legislation, local authorities could begin designating mandatory heat network zones from 2026 onwards.',
+            implications: 'LMAM pipeline opportunity: zones create mandate for connection and remove competitive risk from gas/individual HP alternatives.' },
+          { label: 'Potential rollout at scale', start: 2028, end: 2030, type: 'upcoming', cat: 'zoning',
+            detail: 'If pilots successful, broader rollout of zoning across urban areas is expected.',
+            implications: 'Long-term structural tailwind for centralised heat network investment.' }
+        ]
+      }
+    ]
+  },
+  {
+    section: 'Technical Standards & Metering',
+    rows: [
+      {
+        label: 'Metering & Billing',
+        events: [
+          { label: 'Heat metering BS EN 834', start: 2020, end: 2024, type: 'past', cat: 'technical',
+            detail: 'BS EN 834 standard for heat meters. Compliance was expected but not strictly enforced pre-regulation.',
+            implications: 'Operators with non-compliant meters faced retrofit obligations under Ofgem regime.' },
+          { label: 'Ofgem metering standards mandatory', start: 2024.75, end: 2030, type: 'active-now', cat: 'technical',
+            detail: 'Ofgem now requires MID-compliant heat meters. Smart metering compatibility increasingly expected.',
+            implications: 'LMAM must budget for meter installation/replacement programme. Ongoing calibration and maintenance obligations.' },
+          { label: 'Smart thermal metering push', start: 2026, end: 2029, type: 'upcoming', cat: 'technical',
+            detail: 'Ofgem/DESNZ likely to require half-hourly smart heat metering as standard for new connections.',
+            implications: 'Higher per-unit capex for smart meters but enables demand management, remote reading, and richer data.' }
+        ]
+      },
+      {
+        label: 'Network Performance',
+        events: [
+          { label: 'CIBSE CP1 Heat Networks Code', start: 2020, end: 2030, type: 'active-now', cat: 'technical',
+            detail: 'CIBSE Code of Practice CP1 is the primary technical standard for heat network design and operation. Adoption strongly encouraged by Ofgem.',
+            implications: 'New LMAM network designs should comply with CP1. Key metrics: flow temp, return temp, heat loss, system delta-T.' },
+          { label: 'Mandatory performance reporting', start: 2025, end: 2030, type: 'upcoming', cat: 'technical',
+            detail: 'Ofgem introducing annual performance reporting for authorised operators. Network efficiency, reliability, and customer outcomes.',
+            implications: 'Operational data management required. Poor performance metrics could trigger Ofgem review.' }
+        ]
+      }
+    ]
+  },
+  {
+    section: 'Funding & Investment Frameworks',
+    rows: [
+      {
+        label: 'Capital Grant Schemes',
+        events: [
+          { label: 'HNIP (Heat Networks Investment Project)', start: 2018, end: 2025, type: 'past', cat: 'financial',
+            detail: 'BEIS HNIP provided loans and grants for heat network development. Total fund ~£320m.',
+            implications: 'Closed to new applications. Existing recipients have ongoing reporting obligations.' },
+          { label: 'Green Heat Network Fund (GHNF)', start: 2022, end: 2025.5, type: 'past', cat: 'financial',
+            detail: 'DESNZ GHNF replaced HNIP, focused on low-carbon heat networks (HP, waste heat, geothermal). Grants up to £10m.',
+            implications: 'Closed to new applications from 2025. Check if successor scheme announced.' },
+          { label: 'Warm Homes Plan / successor funding', start: 2025, end: 2030, type: 'upcoming', cat: 'financial',
+            detail: 'Government\'s Warm Homes Plan (announced 2024) may include successor capital funding for heat networks. Details TBC.',
+            implications: 'LMAM should monitor DESNZ announcements for new grant rounds. Grant availability materially affects project IRR.' }
+        ]
+      },
+      {
+        label: 'RAB / Regulatory Returns',
+        events: [
+          { label: 'RAB model exploration', start: 2023, end: 2026.2, type: 'active-now', cat: 'financial',
+            detail: 'Ofgem and DESNZ exploring whether a Regulatory Asset Base model could be applied to heat networks to attract long-term infrastructure capital.',
+            implications: 'If RAB model adopted, LMAM heat network assets could be regulated like water/electricity — stable, long-term returns with Ofgem oversight.' },
+          { label: 'Potential RAB consultation', start: 2026, end: 2027, type: 'upcoming', cat: 'financial',
+            detail: 'Subject to government appetite, a consultation on RAB-style regulation for heat networks could emerge 2026-27.',
+            implications: 'Monitor closely — RAB regulation would be transformative for heat network investment thesis.' }
+        ]
+      }
+    ]
+  },
+  {
+    section: 'Scotland — LHEES',
+    rows: [
+      {
+        label: 'Local Heat & Energy Efficiency Strategies',
+        events: [
+          { label: 'LHEES duty on councils (Scotland)', start: 2022, end: 2023, type: 'past', cat: 'scotland',
+            detail: 'Heat Networks (Scotland) Act 2021 introduced mandatory LHEES — councils must produce strategies identifying heat network zones.',
+            implications: 'Scottish councils publishing LHEES through 2022-24. LMAM should have reviewed LHEES for its operational areas.' },
+          { label: 'LHEES publication programme', start: 2023, end: 2026, type: 'active-now', cat: 'scotland',
+            detail: 'Scottish councils progressively publishing LHEES. Heat network zones identified for priority development.',
+            implications: 'LHEES zone designation in LMAM areas creates planning support and potential connection mandates for heat networks.' },
+          { label: 'Scottish heat network licensing', start: 2024, end: 2030, type: 'active-now', cat: 'scotland',
+            detail: 'Heat Networks (Scotland) Act 2021 licensing regime for heat network operators, administered by Scottish Ministers.',
+            implications: 'LMAM Scottish operations require Scottish licence in addition to Ofgem authorisation. Different but parallel regime.' },
+          { label: 'Zone permit system (Scotland)', start: 2025, end: 2028, type: 'upcoming', cat: 'scotland',
+            detail: 'Zone permits give operators exclusive rights to develop heat networks in designated zones. Competitive tender process.',
+            implications: 'LMAM should actively pursue zone permits in relevant Scottish areas — exclusive rights are highly valuable.' }
+        ]
+      }
+    ]
+  }
+];
+
+const detailItems = [
+  {
+    title: 'Ofgem Authorisation — Core Obligation',
+    status: 'live',
+    date: 'In force from October 2024',
+    cat: 'consumer',
+    body: 'All heat network operators must be authorised by Ofgem. Authorisation requires compliance with consumer protection standards: fair tariff disclosure, metering to MID standard, complaints handling procedure, and compliance with Ofgem\'s licence conditions.',
+    implications: 'LMAM must hold or apply for Ofgem authorisation for each heat network. Failure to obtain is a criminal offence under the Energy Act 2023.'
+  },
+  {
+    title: 'Heat Network Zoning — Development Stage',
+    status: 'upcoming',
+    date: 'Powers in Energy Act 2023; designation from ~2026',
+    cat: 'zoning',
+    body: 'Local authorities will be empowered to designate heat network zones where new buildings must connect, and potentially existing buildings over time. DESNZ is developing guidance and running pilot zones.',
+    implications: 'The single most important structural development for heat network investment. Zone designation removes the competitive threat from individual gas boilers and heat pumps, creating a captive customer base.'
+  },
+  {
+    title: 'Green Heat Network Fund — Status',
+    status: 'consultation',
+    date: 'GHNF closed; successor TBC',
+    cat: 'financial',
+    body: 'The GHNF provided capital grants for low-carbon heat networks. It closed to new applications in 2025. The government\'s Warm Homes Plan references heat networks as a priority but successor grant mechanisms have not been formally confirmed.',
+    implications: 'LMAM should model projects on a no-grant basis for conservatism. If successor funding announced, treat as upside. Monitor DESNZ budget consultations.'
+  },
+  {
+    title: 'RAB Model for Heat Networks',
+    status: 'consultation',
+    date: 'Under consideration; consultation possible 2026-27',
+    cat: 'financial',
+    body: 'Ofgem and DESNZ have discussed applying a Regulatory Asset Base model to heat networks, similar to water and electricity distribution. This would allow operators to earn a regulated return on their asset base, reducing revenue risk and potentially lowering WACC.',
+    implications: 'If adopted, this would be transformative — infrastructure-style regulated returns on heat network assets. LMAM should engage with Ofgem consultations actively.'
+  },
+  {
+    title: 'Scottish LHEES Zone Permits',
+    status: 'upcoming',
+    date: 'Zone permit system from ~2025-26',
+    cat: 'scotland',
+    body: 'Under the Heat Networks (Scotland) Act 2021, zone permits grant exclusive development rights for designated heat network zones. Awarded through a competitive tender process run by Scottish Ministers.',
+    implications: 'Exclusive rights in a zone are a highly valuable, defensible commercial position. LMAM should identify relevant zones from published LHEES and position for permit applications.'
+  },
+  {
+    title: 'Ofgem Performance Reporting',
+    status: 'upcoming',
+    date: 'Phased introduction from 2025',
+    cat: 'technical',
+    body: 'Authorised operators will be required to submit annual performance data to Ofgem covering: network heat loss, system availability/reliability, customer complaint volumes and resolution times, tariff levels, and metering accuracy.',
+    implications: 'LMAM needs operational data infrastructure to capture and report these metrics. Poor performance may trigger Ofgem enforcement action or adverse publicity.'
+  }
+];
+
+// ====================================================
+// RENDER
+// ====================================================
+let activeFilter = 'all';
+
+function yearToPercent(year) {
+  return ((year - START_YEAR) / (END_YEAR - START_YEAR)) * 100;
+}
+
+function buildTimeline() {
+  const wrap = document.getElementById('timeline-wrap');
+  wrap.innerHTML = '';
+
+  // Year ruler
+  const ruler = document.createElement('div');
+  ruler.style.cssText = 'display:flex; padding-left:200px; margin-bottom:0.5rem;';
+  for (let y = START_YEAR; y <= END_YEAR; y++) {
+    const m = document.createElement('div');
+    m.style.cssText = `flex:1; text-align:center; font-size:0.58rem; letter-spacing:0.08em; padding-bottom:0.3rem; border-bottom:1px solid var(--border2); color:${y === 2026 ? 'var(--accent)' : 'var(--muted)'}; font-weight:${y === 2026 ? '500' : '300'};`;
+    m.textContent = y;
+    ruler.appendChild(m);
+  }
+  wrap.appendChild(ruler);
+
+  // Now line container (overlay)
+  const nowPct = yearToPercent(CURRENT_DATE);
+
+  tracks.forEach(section => {
+    const hasVisible = section.rows.some(row =>
+      row.events.some(e => activeFilter === 'all' || e.cat === activeFilter)
+    );
+    if (!hasVisible) return;
+
+    const sTitle = document.createElement('div');
+    sTitle.className = 'track-section-title';
+    sTitle.textContent = section.section;
+    wrap.appendChild(sTitle);
+
+    section.rows.forEach(row => {
+      const visEvents = row.events.filter(e => activeFilter === 'all' || e.cat === activeFilter);
+      if (visEvents.length === 0) return;
+
+      const rowEl = document.createElement('div');
+      rowEl.className = 'track-row';
+
+      const label = document.createElement('div');
+      label.className = 'track-label';
+      label.textContent = row.label;
+      rowEl.appendChild(label);
+
+      const body = document.createElement('div');
+      body.className = 'track-body';
+
+      // Now line
+      const nowLine = document.createElement('div');
+      nowLine.className = 'now-line';
+      nowLine.style.cssText = `left:${nowPct}%; height:100%;`;
+      body.appendChild(nowLine);
+
+      visEvents.forEach(ev => {
+        const bar = document.createElement('div');
+        const leftPct = yearToPercent(ev.start);
+        const widthPct = Math.max(yearToPercent(ev.end) - leftPct, 0.5);
+
+        bar.className = `event-bar ${ev.type === 'active-now' ? 'active-now' : ev.type === 'milestone' ? 'milestone' : ev.type === 'upcoming' ? 'upcoming' : ev.type === 'warning' ? 'warning' : ev.type === 'critical' ? 'critical' : 'past'}`;
+        bar.style.cssText = `left:${leftPct}%; width:${widthPct}%;`;
+        bar.textContent = ev.label;
+
+        bar.addEventListener('mouseenter', (e) => showTooltip(e, ev));
+        bar.addEventListener('mousemove', (e) => moveTooltip(e));
+        bar.addEventListener('mouseleave', hideTooltip);
+
+        body.appendChild(bar);
+      });
+
+      rowEl.appendChild(body);
+      wrap.appendChild(rowEl);
+    });
+  });
+
+  // Now label at top
+  const nowLabelRow = document.createElement('div');
+  nowLabelRow.style.cssText = `display:flex; padding-left:200px; margin-bottom:1rem;`;
+  const nowLabelInner = document.createElement('div');
+  nowLabelInner.style.cssText = `flex:1; position:relative; height:16px;`;
+  const nowLabel = document.createElement('div');
+  nowLabel.style.cssText = `position:absolute; left:${nowPct}%; transform:translateX(-50%); font-size:0.55rem; color:var(--accent); white-space:nowrap; letter-spacing:0.1em;`;
+  nowLabel.textContent = '▼ NOW';
+  nowLabelInner.appendChild(nowLabel);
+  nowLabelRow.appendChild(nowLabelInner);
+  wrap.insertBefore(nowLabelRow, wrap.firstChild);
+}
+
+function buildDetails() {
+  const container = document.getElementById('detail-cards');
+  container.innerHTML = '';
+  const items = activeFilter === 'all' ? detailItems : detailItems.filter(d => d.cat === activeFilter);
+
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'detail-card';
+    card.innerHTML = `
+      <div class="detail-card-header">
+        <div class="detail-card-title">${item.title}</div>
+        <div class="detail-status ${item.status}">${item.status}</div>
+      </div>
+      <div class="detail-meta">${item.date}</div>
+      <div class="detail-body">${item.body}</div>
+      <div class="detail-implications"><strong>LMAM implication:</strong> ${item.implications}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function showTooltip(e, ev) {
+  const tt = document.getElementById('tooltip');
+  tt.innerHTML = `
+    <div class="tooltip-title">${ev.label}</div>
+    <div class="tooltip-date">${ev.start.toFixed(0)}${ev.end > ev.start + 0.5 ? ' — ' + ev.end.toFixed(0) : ''}</div>
+    <div class="tooltip-body">${ev.detail || ''}</div>
+    ${ev.implications ? `<div class="tooltip-body" style="margin-top:0.5rem; border-top:1px solid var(--border2); padding-top:0.5rem;"><strong style="color:var(--accent)">LMAM:</strong> ${ev.implications}</div>` : ''}
+  `;
+  tt.classList.add('visible');
+  moveTooltip(e);
+}
+
+function moveTooltip(e) {
+  const tt = document.getElementById('tooltip');
+  let x = e.clientX + 16;
+  let y = e.clientY + 16;
+  if (x + 330 > window.innerWidth) x = e.clientX - 330;
+  if (y + 200 > window.innerHeight) y = e.clientY - 200;
+  tt.style.left = x + 'px';
+  tt.style.top = y + 'px';
+}
+
+function hideTooltip() {
+  document.getElementById('tooltip').classList.remove('visible');
+}
+
+function setFilter(f, btn) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildTimeline();
+  buildDetails();
+}
+
+buildTimeline();
+buildDetails();
+</script>
+</body>
+</html>
