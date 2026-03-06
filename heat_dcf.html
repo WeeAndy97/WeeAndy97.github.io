@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heat Network DCF — HSA Cashflow Model</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf8f4;
+    --surface: #ffffff;
+    --surface2: #f4f1ec;
+    --border: #e0d9ce;
+    --border2: #cdc4b5;
+    --text: #1a1714;
+    --text2: #6b6158;
+    --muted: #9e9387;
+    --accent: #b85c2a;
+    --accent2: #d4773d;
+    --green: #2d6a4f;
+    --green2: #40916c;
+    --red: #9b2226;
+    --blue: #1d3557;
+    --yellow: #e9c46a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 14px; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--text);
+    color: var(--bg);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .header-left h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.25rem;
+  }
+
+  .header-left p {
+    font-size: 0.65rem;
+    color: #9e9387;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    font-size: 0.6rem;
+    color: #9e9387;
+    letter-spacing: 0.08em;
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* LAYOUT */
+  .main {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    min-height: calc(100vh - 80px);
+  }
+
+  @media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+
+  /* INPUTS PANEL */
+  .inputs-panel {
+    background: var(--surface2);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem;
+    overflow-y: auto;
+  }
+
+  .panel-section {
+    margin-bottom: 1.75rem;
+  }
+
+  .panel-section-title {
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .input-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .input-label {
+    font-size: 0.62rem;
+    color: var(--text2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .input-label span {
+    font-size: 0.58rem;
+    color: var(--muted);
+  }
+
+  .input-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    transition: border-color 0.15s;
+  }
+
+  .input-wrap:focus-within { border-color: var(--accent); }
+
+  .input-wrap input {
+    flex: 1;
+    padding: 0.45rem 0.6rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    outline: none;
+    width: 100%;
+  }
+
+  .input-unit {
+    padding: 0 0.6rem;
+    font-size: 0.6rem;
+    color: var(--muted);
+    border-left: 1px solid var(--border);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background: var(--surface2);
+    white-space: nowrap;
+  }
+
+  /* SLIDER */
+  .slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.2rem;
+  }
+
+  input[type="range"] {
+    flex: 1;
+    height: 2px;
+    -webkit-appearance: none;
+    background: var(--border2);
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+
+  .slider-val {
+    font-size: 0.65rem;
+    color: var(--accent);
+    font-weight: 500;
+    min-width: 45px;
+    text-align: right;
+  }
+
+  /* RESULTS PANEL */
+  .results-panel {
+    padding: 1.5rem;
+    overflow-y: auto;
+  }
+
+  /* VALUATION BANNER */
+  .valuation-banner {
+    background: var(--text);
+    color: var(--bg);
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--text);
+  }
+
+  .val-item {
+    background: var(--text);
+    padding: 0.75rem 1.25rem;
+    border-right: 1px solid #333;
+  }
+
+  .val-item:last-child { border-right: none; }
+
+  .val-label {
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #9e9387;
+    margin-bottom: 0.4rem;
+  }
+
+  .val-number {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--bg);
+    line-height: 1;
+  }
+
+  .val-number.positive { color: #74c69d; }
+  .val-number.negative { color: #e76f51; }
+  .val-number.neutral { color: var(--yellow); }
+
+  .val-sub {
+    font-size: 0.58rem;
+    color: #6b6158;
+    margin-top: 0.3rem;
+  }
+
+  /* CASHFLOW TABLE */
+  .table-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .table-title {
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .table-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.65rem;
+  }
+
+  thead tr {
+    background: var(--surface2);
+    border-bottom: 2px solid var(--border2);
+  }
+
+  th {
+    padding: 0.5rem 0.75rem;
+    text-align: right;
+    font-weight: 500;
+    color: var(--text2);
+    letter-spacing: 0.05em;
+    font-size: 0.6rem;
+    white-space: nowrap;
+  }
+
+  th:first-child { text-align: left; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  tbody tr:hover { background: var(--surface2); }
+
+  tbody tr.total-row {
+    background: var(--surface2);
+    border-top: 2px solid var(--border2);
+    font-weight: 500;
+  }
+
+  td {
+    padding: 0.45rem 0.75rem;
+    text-align: right;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  td:first-child { text-align: left; color: var(--text2); }
+
+  td.positive { color: var(--green2); }
+  td.negative { color: var(--red); }
+  td.highlight { color: var(--accent); font-weight: 500; }
+
+  /* CHART */
+  .chart-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  canvas { width: 100% !important; }
+
+  /* SENSITIVITY TABLE */
+  .sensitivity-grid {
+    display: grid;
+    grid-template-columns: auto repeat(5, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    font-size: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .sg-cell {
+    background: var(--surface);
+    padding: 0.4rem 0.6rem;
+    text-align: center;
+  }
+
+  .sg-cell.header {
+    background: var(--surface2);
+    color: var(--text2);
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+  }
+
+  .sg-cell.row-label {
+    background: var(--surface2);
+    text-align: left;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+
+  .sg-cell.base { background: #fff8f0; font-weight: 500; }
+  .sg-cell.bull { background: #f0fff4; color: var(--green); }
+  .sg-cell.bear { background: #fff5f5; color: var(--red); }
+
+  /* ASSUMPTIONS BOX */
+  .assumptions {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 1rem 1.25rem;
+    font-size: 0.62rem;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+
+  .assumptions strong { color: var(--text); }
+
+  /* FOOTER */
+  .results-footer {
+    font-size: 0.58rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    margin-top: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Heat Network DCF — HSA Cashflow Model</h1>
+    <p>Last Mile Asset Management · Internal Reference Tool</p>
+  </div>
+  <div class="header-right">
+    Core inputs only<br>
+    Adjust parameters → results update live
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- INPUTS -->
+  <div class="inputs-panel">
+
+    <div class="panel-section">
+      <div class="panel-section-title">Network Scale</div>
+
+      <div class="input-row">
+        <div class="input-label">Connected homes (EPC units) <span>anchor + residential</span></div>
+        <div class="input-wrap">
+          <input type="number" id="connections" value="500" min="50" max="10000" oninput="update()">
+          <span class="input-unit">units</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" min="50" max="5000" value="500" step="50" oninput="syncSlider(this,'connections'); update()">
+          <span class="slider-val" id="connections-sv">500</span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-label">Avg annual heat demand per unit <span>MWh/yr</span></div>
+        <div class="input-wrap">
+          <input type="number" id="heatDemand" value="12" min="4" max="30" step="0.5" oninput="update()">
+          <span class="input-unit">MWh/unit</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" min="4" max="30" value="12" step="0.5" oninput="syncSlider(this,'heatDemand'); update()">
+          <span class="slider-val" id="heatDemand-sv">12</span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-label">Network loss factor <span>% of generated heat lost</span></div>
+        <div class="input-wrap">
+          <input type="number" id="networkLoss" value="15" min="5" max="35" step="1" oninput="update()">
+          <span class="input-unit">%</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" min="5" max="35" value="15" step="1" oninput="syncSlider(this,'networkLoss'); update()">
+          <span class="slider-val" id="networkLoss-sv">15%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-title">Revenue (HSA)</div>
+
+      <div class="input-row">
+        <div class="input-label">Heat unit rate <span>charged to customer</span></div>
+        <div class="input-wrap">
+          <input type="number" id="heatRate" value="8.5" min="3" max="20" step="0.1" oninput="update()">
+          <span class="input-unit">p/kWh</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" min="3" max="20" value="8.5" step="0.1" oninput="syncSlider(this,'heatRate'); update()">
+          <span class="slider-val" id="heatRate-sv">8.5p</span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-label">Annual standing charge <span>per connected unit</span></div>
+        <div class="input-wrap">
+          <input type="number" id="standingCharge" value="200" min="0" max="600" step="10" oninput="update()">
+          <span class="input-unit">£/yr</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" min="0" max="600" value="200" step="10" oninput="syncSlider(this,'standingCharge'); update()">
+          <span class="slider-val" id="standingCharge-sv">£200</span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-label">Revenue escalation <span>annual RPI-linked</span></div>
+        <div class="input-wrap">
+          <input type="number" id="revenueEsc" value="3.0" min="0" max="8" step="0.1" oninput="update()">
+          <span class="input-unit">% p.a.</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" min="0" max="8" value="3.0" step="0.1" oninput="syncSlider(this,'revenueEsc'); update()">
+          <span class="slider-val" id="revenueEsc-sv">3.0%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-title">Operating Costs</div>
+
+      <div class="input-row">
+        <div class="input-label">Electricity input cost <span>HP electricity purchase</span></div>
+        <div class="input-wrap">
+          <input type="number" id="elecCost" value="22" min="5" max="50" step="0.5" oninput="update()">
+          <span class="input-unit">p/kWh</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" min="5" max="50" value="22" step="0.5" oninput="syncSlider(this,'elecCost'); update()">
+          <span class="slider-val" id="elecCost-sv">22p</span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-label">Heat pump COP <span>coefficient of performance</span></div>
+        <div class="input-wrap">
+          <input type="number" id="cop" value="3.0" min="1.5" max="6" step="0.1" oninput="update()">
+          <span class="input-unit">ratio</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" min="1.5" max="6" value="3.0" step="0.1" oninput="syncSlider(this,'cop'); update()">
+          <span class="slider-val" id="cop-sv">3.0x</span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-label">O&M cost <span>annual network maintenance</span></div>
+        <div class="input-wrap">
+          <input type="number" id="omCost" value="150" min="50" max="500" step="10" oninput="update()">
+          <span class="input-unit">£/conn/yr</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" min="50" max="500" value="150" step="10" oninput="syncSlider(this,'omCost'); update()">
+          <span class="slider-val" id="omCost-sv">£150</span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-label">Opex escalation</div>
+        <div class="input-wrap">
+          <input type="number" id="opexEsc" value="3.5" min="0" max="8" step="0.1" oninput="update()">
+          <span class="input-unit">% p.a.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-title">Capital & Returns</div>
+
+      <div class="input-row">
+        <div class="input-label">Initial capex <span>total network build cost</span></div>
+        <div class="input-wrap">
+          <input type="number" id="capex" value="5000" min="500" max="50000" step="100" oninput="update()">
+          <span class="input-unit">£k</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" min="500" max="30000" value="5000" step="100" oninput="syncSlider(this,'capex'); update()">
+          <span class="slider-val" id="capex-sv">£5,000k</span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-label">Maintenance capex <span>annual lifecycle reinvestment</span></div>
+        <div class="input-wrap">
+          <input type="number" id="maintCapex" value="50" min="0" max="300" step="10" oninput="update()">
+          <span class="input-unit">£k/yr</span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-label">WACC <span>weighted avg cost of capital</span></div>
+        <div class="input-wrap">
+          <input type="number" id="wacc" value="7.5" min="3" max="15" step="0.25" oninput="update()">
+          <span class="input-unit">%</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" min="3" max="15" value="7.5" step="0.25" oninput="syncSlider(this,'wacc'); update()">
+          <span class="slider-val" id="wacc-sv">7.5%</span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-label">HSA contract term <span>years modelled</span></div>
+        <div class="input-wrap">
+          <input type="number" id="term" value="25" min="10" max="40" step="1" oninput="update()">
+          <span class="input-unit">years</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" min="10" max="40" value="25" step="1" oninput="syncSlider(this,'term'); update()">
+          <span class="slider-val" id="term-sv">25 yrs</span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-label">Terminal value multiple <span>× final year EBITDA</span></div>
+        <div class="input-wrap">
+          <input type="number" id="tvMultiple" value="12" min="5" max="25" step="0.5" oninput="update()">
+          <span class="input-unit">×</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" min="5" max="25" value="12" step="0.5" oninput="syncSlider(this,'tvMultiple'); update()">
+          <span class="slider-val" id="tvMultiple-sv">12×</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-panel">
+
+    <!-- VALUATION BANNER -->
+    <div class="valuation-banner">
+      <div class="val-item">
+        <div class="val-label">NPV of FCFs</div>
+        <div class="val-number positive" id="npv-display">—</div>
+        <div class="val-sub" id="npv-sub">£k</div>
+      </div>
+      <div class="val-item">
+        <div class="val-label">Implied EV (incl. TV)</div>
+        <div class="val-number neutral" id="ev-display">—</div>
+        <div class="val-sub" id="ev-sub">£k total</div>
+      </div>
+      <div class="val-item">
+        <div class="val-label">Yr 1 EBITDA Margin</div>
+        <div class="val-number" id="margin-display">—</div>
+        <div class="val-sub" id="margin-sub">% of revenue</div>
+      </div>
+    </div>
+
+    <!-- KEY METRICS ROW -->
+    <div style="display:grid; grid-template-columns: repeat(4,1fr); gap:1px; background:var(--border); border:1px solid var(--border); margin-bottom:1.5rem;">
+      <div style="background:var(--surface); padding:0.75rem 1rem;">
+        <div style="font-size:0.55rem; letter-spacing:0.12em; color:var(--muted); text-transform:uppercase; margin-bottom:0.3rem;">Yr 1 Revenue</div>
+        <div style="font-family:'Libre Baskerville',serif; font-size:1.1rem;" id="yr1-rev">—</div>
+      </div>
+      <div style="background:var(--surface); padding:0.75rem 1rem;">
+        <div style="font-size:0.55rem; letter-spacing:0.12em; color:var(--muted); text-transform:uppercase; margin-bottom:0.3rem;">Yr 1 Elec Cost</div>
+        <div style="font-family:'Libre Baskerville',serif; font-size:1.1rem;" id="yr1-elec">—</div>
+      </div>
+      <div style="background:var(--surface); padding:0.75rem 1rem;">
+        <div style="font-size:0.55rem; letter-spacing:0.12em; color:var(--muted); text-transform:uppercase; margin-bottom:0.3rem;">Heat gen. req.</div>
+        <div style="font-family:'Libre Baskerville',serif; font-size:1.1rem;" id="heat-gen">—</div>
+      </div>
+      <div style="background:var(--surface); padding:0.75rem 1rem;">
+        <div style="font-size:0.55rem; letter-spacing:0.12em; color:var(--muted); text-transform:uppercase; margin-bottom:0.3rem;">EV / conn.</div>
+        <div style="font-family:'Libre Baskerville',serif; font-size:1.1rem;" id="ev-per-conn">—</div>
+      </div>
+    </div>
+
+    <!-- CASHFLOW TABLE -->
+    <div class="table-section">
+      <div class="table-title">Annual Cashflow Summary (£k)</div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Revenue</th>
+              <th>Elec Cost</th>
+              <th>O&M</th>
+              <th>EBITDA</th>
+              <th>Maint. Capex</th>
+              <th>FCF</th>
+              <th>Disc. FCF</th>
+              <th>Cum. DCF</th>
+            </tr>
+          </thead>
+          <tbody id="cashflow-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SENSITIVITY -->
+    <div class="table-section">
+      <div class="table-title">NPV Sensitivity — WACC vs Heat Rate (£k)</div>
+      <div id="sensitivity-grid" class="sensitivity-grid"></div>
+    </div>
+
+    <!-- ASSUMPTIONS -->
+    <div class="assumptions">
+      <strong>Key assumptions:</strong> Revenue = (heat demand × unit rate) + standing charge. Heat generation required = demand ÷ (1 − loss factor). Electricity input = heat generated ÷ COP. All costs and revenues escalate annually from Year 1. FCF = EBITDA − maintenance capex. Terminal value = final year EBITDA × multiple, discounted at WACC. Tax and leverage not modelled in core version.
+    </div>
+
+    <div class="results-footer">
+      LMAM Internal Reference · Heat Network DCF Tool · Not for external distribution · Results are indicative only
+    </div>
+
+  </div>
+</div>
+
+<script>
+function fmt(n, decimals=0) {
+  if (isNaN(n) || !isFinite(n)) return '—';
+  return n.toLocaleString('en-GB', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+function fmtK(n) {
+  return '£' + fmt(Math.round(n/1000));
+}
+
+function syncSlider(slider, id) {
+  document.getElementById(id).value = slider.value;
+  // update display
+  const sv = document.getElementById(id + '-sv');
+  if (!sv) return;
+  const v = parseFloat(slider.value);
+  if (id === 'connections') sv.textContent = fmt(v);
+  else if (id === 'heatDemand') sv.textContent = v;
+  else if (id === 'networkLoss') sv.textContent = v + '%';
+  else if (id === 'heatRate') sv.textContent = v + 'p';
+  else if (id === 'standingCharge') sv.textContent = '£' + fmt(v);
+  else if (id === 'revenueEsc') sv.textContent = v + '%';
+  else if (id === 'elecCost') sv.textContent = v + 'p';
+  else if (id === 'cop') sv.textContent = v + 'x';
+  else if (id === 'omCost') sv.textContent = '£' + v;
+  else if (id === 'capex') sv.textContent = '£' + fmt(v) + 'k';
+  else if (id === 'wacc') sv.textContent = v + '%';
+  else if (id === 'term') sv.textContent = v + ' yrs';
+  else if (id === 'tvMultiple') sv.textContent = v + '×';
+}
+
+function getVal(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+function calcModel(overrides = {}) {
+  const p = {
+    connections: getVal('connections'),
+    heatDemand: getVal('heatDemand'),        // MWh/unit/yr
+    networkLoss: getVal('networkLoss') / 100,
+    heatRate: getVal('heatRate') / 100,       // £/kWh
+    standingCharge: getVal('standingCharge'), // £/yr/unit
+    revenueEsc: getVal('revenueEsc') / 100,
+    elecCost: getVal('elecCost') / 100,       // £/kWh
+    cop: getVal('cop'),
+    omCost: getVal('omCost'),                 // £/conn/yr
+    opexEsc: getVal('opexEsc') / 100,
+    capex: getVal('capex') * 1000,            // £
+    maintCapex: getVal('maintCapex') * 1000,
+    wacc: getVal('wacc') / 100,
+    term: Math.round(getVal('term')),
+    tvMultiple: getVal('tvMultiple'),
+    ...overrides
+  };
+
+  const rows = [];
+  let cumDCF = -p.capex;
+
+  // heat gen required (MWh) = demand / (1 - loss)
+  const heatGenBase = p.connections * p.heatDemand / (1 - p.networkLoss);
+  // elec input (MWh) = heat gen / COP
+  const elecInputBase = heatGenBase / p.cop;
+
+  for (let y = 1; y <= p.term; y++) {
+    const esc_rev = Math.pow(1 + p.revenueEsc, y - 1);
+    const esc_opex = Math.pow(1 + p.opexEsc, y - 1);
+
+    const heatRevenue = p.connections * p.heatDemand * 1000 * p.heatRate * esc_rev; // £
+    const standingRevenue = p.connections * p.standingCharge * esc_rev;
+    const revenue = heatRevenue + standingRevenue;
+
+    const elecCostTotal = elecInputBase * 1000 * p.elecCost * esc_opex;
+    const omTotal = p.connections * p.omCost * esc_opex;
+    const totalOpex = elecCostTotal + omTotal;
+
+    const ebitda = revenue - totalOpex;
+    const fcf = ebitda - p.maintCapex * esc_opex;
+    const df = 1 / Math.pow(1 + p.wacc, y);
+    const discFCF = fcf * df;
+    cumDCF += discFCF;
+
+    rows.push({ y, revenue, elecCostTotal, omTotal, ebitda, fcf, discFCF, cumDCF });
+  }
+
+  const lastRow = rows[rows.length - 1];
+  const terminalValue = lastRow.ebitda * p.tvMultiple / Math.pow(1 + p.wacc, p.term);
+  const npv = cumDCF; // cumulative DCF of FCFs (capex already deducted)
+  const ev = npv + terminalValue + p.capex; // EV = PV of FCFs + TV (capex added back as we show NPV net of capex)
+
+  return { rows, npv, ev, terminalValue, heatGenBase, elecInputBase, p };
+}
+
+function update() {
+  const { rows, npv, ev, terminalValue, heatGenBase, elecInputBase, p } = calcModel();
+
+  // Banner
+  const npvEl = document.getElementById('npv-display');
+  npvEl.textContent = '£' + fmt(Math.round(npv/1000)) + 'k';
+  npvEl.className = 'val-number ' + (npv >= 0 ? 'positive' : 'negative');
+
+  document.getElementById('ev-display').textContent = '£' + fmt(Math.round(ev/1000)) + 'k';
+
+  const yr1 = rows[0];
+  const margin = yr1.ebitda / yr1.revenue * 100;
+  const marginEl = document.getElementById('margin-display');
+  marginEl.textContent = fmt(margin, 1) + '%';
+  marginEl.className = 'val-number ' + (margin >= 40 ? 'positive' : margin >= 20 ? 'neutral' : 'negative');
+
+  // Key metrics
+  document.getElementById('yr1-rev').textContent = '£' + fmt(Math.round(yr1.revenue/1000)) + 'k';
+  document.getElementById('yr1-elec').textContent = '£' + fmt(Math.round(yr1.elecCostTotal/1000)) + 'k';
+  document.getElementById('heat-gen').textContent = fmt(Math.round(heatGenBase)) + ' MWh';
+  document.getElementById('ev-per-conn').textContent = '£' + fmt(Math.round(ev/p.connections/1000)) + 'k';
+
+  // Cashflow table — show every year up to 25, then every 5
+  const tbody = document.getElementById('cashflow-tbody');
+  tbody.innerHTML = '';
+
+  const showYears = rows.filter(r => r.y <= 5 || r.y % 5 === 0);
+
+  showYears.forEach(row => {
+    const tr = document.createElement('tr');
+    const cells = [
+      { v: 'Year ' + row.y, cls: '' },
+      { v: '£' + fmt(Math.round(row.revenue/1000)), cls: 'positive' },
+      { v: '(£' + fmt(Math.round(row.elecCostTotal/1000)) + ')', cls: 'negative' },
+      { v: '(£' + fmt(Math.round(row.omTotal/1000)) + ')', cls: 'negative' },
+      { v: '£' + fmt(Math.round(row.ebitda/1000)), cls: row.ebitda >= 0 ? 'positive' : 'negative' },
+      { v: '(£' + fmt(Math.round(p.maintCapex/1000)) + ')', cls: '' },
+      { v: '£' + fmt(Math.round(row.fcf/1000)), cls: row.fcf >= 0 ? 'positive' : 'negative' },
+      { v: '£' + fmt(Math.round(row.discFCF/1000)), cls: row.discFCF >= 0 ? 'positive' : 'negative' },
+      { v: '£' + fmt(Math.round(row.cumDCF/1000)), cls: row.cumDCF >= 0 ? 'positive highlight' : 'negative' },
+    ];
+    cells.forEach((c, i) => {
+      const td = document.createElement('td');
+      td.textContent = c.v;
+      td.className = i === 0 ? '' : c.cls;
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  // Terminal value row
+  const tvRow = document.createElement('tr');
+  tvRow.className = 'total-row';
+  tvRow.innerHTML = `<td>Terminal Value (disc.)</td><td colspan="6" style="text-align:center;color:var(--muted)">EV × ${p.tvMultiple}x final EBITDA</td><td class="highlight">£${fmt(Math.round(terminalValue/1000))}</td><td class="highlight">£${fmt(Math.round((npv+terminalValue+p.capex)/1000))}</td>`;
+  tbody.appendChild(tvRow);
+
+  // Sensitivity
+  buildSensitivity();
+}
+
+function buildSensitivity() {
+  const baseWacc = getVal('wacc') / 100;
+  const baseRate = getVal('heatRate') / 100;
+
+  const waccRange = [-0.02, -0.01, 0, +0.01, +0.02];
+  const rateRange = [-0.02/100, -0.01/100, 0, +0.01/100, +0.02/100];
+
+  const grid = document.getElementById('sensitivity-grid');
+  grid.innerHTML = '';
+
+  // top-left blank
+  const blank = document.createElement('div');
+  blank.className = 'sg-cell header';
+  blank.textContent = 'WACC ↓ / Rate →';
+  grid.appendChild(blank);
+
+  rateRange.forEach(rd => {
+    const d = document.createElement('div');
+    d.className = 'sg-cell header';
+    d.textContent = fmt((baseRate + rd) * 100, 1) + 'p';
+    grid.appendChild(d);
+  });
+
+  waccRange.forEach(wd => {
+    const label = document.createElement('div');
+    label.className = 'sg-cell row-label';
+    label.textContent = fmt((baseWacc + wd) * 100, 1) + '%';
+    grid.appendChild(label);
+
+    rateRange.forEach(rd => {
+      const { npv } = calcModel({ wacc: baseWacc + wd, heatRate: baseRate + rd });
+      const d = document.createElement('div');
+      const isBase = wd === 0 && rd === 0;
+      d.className = 'sg-cell ' + (isBase ? 'base' : npv > 0 ? 'bull' : 'bear');
+      d.textContent = '£' + fmt(Math.round(npv / 1000)) + 'k';
+      grid.appendChild(d);
+    });
+  });
+}
+
+// Init slider display values
+['connections','heatDemand','networkLoss','heatRate','standingCharge','revenueEsc','elecCost','cop','omCost','capex','wacc','term','tvMultiple'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    const sv = document.getElementById(id + '-sv');
+    if (sv) {
+      const fakeSlider = { value: el.value };
+      syncSlider(fakeSlider, id);
+    }
+  }
+});
+
+update();
+</script>
+</body>
+</html>
