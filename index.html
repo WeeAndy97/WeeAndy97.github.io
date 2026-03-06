@@ -20,11 +20,10 @@
     --elec: #facc15;
     --gas: #60a5fa;
     --water: #34d399;
-    --coming: #333d33;
+    --purple: #c084fc;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { scroll-behavior: smooth; }
 
   body {
@@ -35,346 +34,117 @@
     overflow-x: hidden;
   }
 
-  /* GRAIN OVERLAY */
   body::before {
     content: '';
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.6;
+    pointer-events: none; z-index: 0; opacity: 0.6;
   }
 
-  /* GRID LINES BACKGROUND */
   body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 60px 60px;
-    opacity: 0.3;
-    pointer-events: none;
-    z-index: 0;
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px; opacity: 0.3; pointer-events: none; z-index: 0;
   }
 
-  .wrap {
-    position: relative;
-    z-index: 1;
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
+  .wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 2rem; }
 
-  /* NAV */
   nav {
-    border-bottom: 1px solid var(--border);
-    padding: 1.2rem 0;
-    position: sticky;
-    top: 0;
-    background: rgba(10,11,10,0.92);
-    backdrop-filter: blur(8px);
-    z-index: 100;
+    border-bottom: 1px solid var(--border); padding: 1.2rem 0;
+    position: sticky; top: 0; background: rgba(10,11,10,0.92);
+    backdrop-filter: blur(8px); z-index: 100;
   }
 
-  nav .wrap {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  nav .wrap { display: flex; justify-content: space-between; align-items: center; }
+  .nav-logo { font-size: 0.65rem; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; }
+  .nav-meta { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; }
 
-  .nav-logo {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    text-transform: uppercase;
-  }
-
-  .nav-meta {
-    font-size: 0.6rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-  }
-
-  /* HERO */
-  .hero {
-    padding: 6rem 0 4rem;
-    border-bottom: 1px solid var(--border);
-  }
+  .hero { padding: 6rem 0 4rem; border-bottom: 1px solid var(--border); }
 
   .hero-eyebrow {
-    font-size: 0.6rem;
-    letter-spacing: 0.25em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    font-size: 0.6rem; letter-spacing: 0.25em; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
   }
 
-  .hero-eyebrow::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--accent-dim);
-    max-width: 120px;
-  }
+  .hero-eyebrow::after { content: ''; flex: 1; height: 1px; background: var(--accent-dim); max-width: 120px; }
 
   h1 {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(3rem, 7vw, 5.5rem);
-    font-weight: 300;
-    line-height: 1.05;
-    color: var(--text);
-    margin-bottom: 1.5rem;
-    letter-spacing: -0.01em;
+    font-size: clamp(3rem, 7vw, 5.5rem); font-weight: 300;
+    line-height: 1.05; color: var(--text); margin-bottom: 1.5rem; letter-spacing: -0.01em;
   }
 
-  h1 em {
-    font-style: italic;
-    color: var(--text2);
-  }
+  h1 em { font-style: italic; color: var(--text2); }
 
-  .hero-sub {
-    font-size: 0.7rem;
-    color: var(--text2);
-    line-height: 1.8;
-    max-width: 520px;
-    letter-spacing: 0.03em;
-  }
+  .hero-sub { font-size: 0.7rem; color: var(--text2); line-height: 1.8; max-width: 520px; letter-spacing: 0.03em; }
 
-  .hero-stats {
-    display: flex;
-    gap: 3rem;
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border);
-  }
+  .hero-stats { display: flex; gap: 3rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .stat-item { display: flex; flex-direction: column; gap: 0.3rem; }
+  .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; color: var(--accent); line-height: 1; }
+  .stat-label { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
 
-  .stat-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
+  .tools-section { padding: 4rem 0; }
+  .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+  .section-label { font-size: 0.6rem; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
 
-  .stat-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2rem;
-    font-weight: 300;
-    color: var(--accent);
-    line-height: 1;
-  }
+  .sector-group { margin-bottom: 2.5rem; }
+  .sector-label { font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; padding-left: 0.25rem; }
 
-  .stat-label {
-    font-size: 0.58rem;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-  }
+  .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .tools-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
 
-  /* TOOLS SECTION */
-  .tools-section {
-    padding: 4rem 0;
-  }
-
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  .section-label {
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  .section-line {
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  /* TOOL CARDS */
-  .tools-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    margin-bottom: 1px;
-  }
-
-  @media (max-width: 640px) { .tools-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) { .tools-grid, .tools-grid-3 { grid-template-columns: 1fr; } }
 
   .tool-card {
-    background: var(--surface);
-    padding: 2rem;
-    position: relative;
-    overflow: hidden;
-    transition: background 0.2s;
-    text-decoration: none;
-    display: block;
-    cursor: pointer;
+    background: var(--surface); padding: 2rem; position: relative;
+    overflow: hidden; transition: background 0.2s; text-decoration: none;
+    display: block; cursor: pointer;
   }
 
   .tool-card:hover { background: #161a16; }
-
-  .tool-card.coming-soon {
-    cursor: default;
-    opacity: 0.5;
-  }
+  .tool-card.coming-soon { cursor: default; opacity: 0.5; }
 
   .tool-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 3px;
-    height: 100%;
-    background: var(--card-accent, var(--accent));
-    opacity: 0;
-    transition: opacity 0.2s;
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%; background: var(--card-accent, var(--accent));
+    opacity: 0; transition: opacity 0.2s;
   }
 
   .tool-card:not(.coming-soon):hover::before { opacity: 1; }
 
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1.25rem;
-  }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; }
 
-  .card-icon {
-    width: 36px;
-    height: 36px;
-    border: 1px solid var(--border2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-  }
+  .card-icon { width: 36px; height: 36px; border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
 
-  .card-status {
-    font-size: 0.55rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 0.25rem 0.6rem;
-    border: 1px solid;
-  }
+  .card-status { font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.25rem 0.6rem; border: 1px solid; }
 
   .status-live { border-color: var(--accent); color: var(--accent); }
   .status-soon { border-color: var(--border2); color: var(--muted); }
 
-  .card-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: var(--text);
-    margin-bottom: 0.5rem;
-    line-height: 1.2;
-  }
+  .card-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 300; color: var(--text); margin-bottom: 0.5rem; line-height: 1.2; }
+  .card-sub { font-size: 0.63rem; color: var(--text2); line-height: 1.6; margin-bottom: 1.25rem; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
-  .card-sub {
-    font-size: 0.63rem;
-    color: var(--text2);
-    line-height: 1.6;
-    margin-bottom: 1.25rem;
-  }
+  .tag { font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.5rem; border: 1px solid var(--border2); color: var(--muted); }
 
-  .card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
+  .card-arrow { position: absolute; bottom: 1.5rem; right: 1.5rem; font-size: 0.65rem; color: var(--muted); transition: color 0.2s, transform 0.2s; letter-spacing: 0.1em; }
+  .tool-card:not(.coming-soon):hover .card-arrow { color: var(--card-accent, var(--accent)); transform: translateX(4px); }
 
-  .tag {
-    font-size: 0.55rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 0.2rem 0.5rem;
-    border: 1px solid var(--border2);
-    color: var(--muted);
-  }
-
-  .tag.live {
-    border-color: currentColor;
-  }
-
-  .card-arrow {
-    position: absolute;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    font-size: 0.65rem;
-    color: var(--muted);
-    transition: color 0.2s, transform 0.2s;
-    letter-spacing: 0.1em;
-  }
-
-  .tool-card:not(.coming-soon):hover .card-arrow {
-    color: var(--card-accent, var(--accent));
-    transform: translateX(4px);
-  }
-
-  /* FOOTER */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 2rem 0;
-    margin-top: 2rem;
-  }
-
-  footer .wrap {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .footer-text {
-    font-size: 0.6rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    line-height: 1.8;
-  }
-
+  footer { border-top: 1px solid var(--border); padding: 2rem 0; margin-top: 2rem; }
+  footer .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .footer-text { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.08em; line-height: 1.8; }
   .footer-text span { color: var(--text2); }
 
-  /* ANIMATIONS */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
   .hero-eyebrow { animation: fadeUp 0.5s ease both; }
   h1 { animation: fadeUp 0.5s 0.1s ease both; }
   .hero-sub { animation: fadeUp 0.5s 0.2s ease both; }
   .hero-stats { animation: fadeUp 0.5s 0.3s ease both; }
-  .tool-card:nth-child(1) { animation: fadeUp 0.5s 0.4s ease both; }
-  .tool-card:nth-child(2) { animation: fadeUp 0.5s 0.5s ease both; }
-  .tool-card:nth-child(3) { animation: fadeUp 0.5s 0.55s ease both; }
-  .tool-card:nth-child(4) { animation: fadeUp 0.5s 0.6s ease both; }
 
-  /* PULSE DOT */
-  .pulse {
-    display: inline-block;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    margin-right: 0.5rem;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
+  .pulse { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 0.5rem; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 </style>
 </head>
 <body>
@@ -392,111 +162,120 @@
     <h1>UK Infrastructure<br><em>Reference Framework</em></h1>
     <p class="hero-sub">Sector-by-sector consideration frameworks for last-mile utility network investment. Covering technical, commercial, regulatory, and ESG dimensions across asset types.</p>
     <div class="hero-stats">
-      <div class="stat-item">
-        <div class="stat-num">1</div>
-        <div class="stat-label">Live tool</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">4</div>
-        <div class="stat-label">Sectors covered</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">~£1bn</div>
-        <div class="stat-label">AUM context</div>
-      </div>
+      <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">Live tools</div></div>
+      <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">Sectors covered</div></div>
+      <div class="stat-item"><div class="stat-num">~£1bn</div><div class="stat-label">AUM context</div></div>
     </div>
   </div>
 </section>
 
 <section class="tools-section">
   <div class="wrap">
+
     <div class="section-header">
       <div class="section-label">Reference Tools</div>
       <div class="section-line"></div>
     </div>
 
-    <div class="tools-grid">
+    <!-- HEAT NETWORKS -->
+    <div class="sector-group">
+      <div class="sector-label">Heat Networks</div>
+      <div class="tools-grid">
 
-      <!-- HEAT — LIVE -->
-      <a class="tool-card" href="heat_framework.html" style="--card-accent: var(--heat);">
-        <div class="card-top">
-          <div class="card-icon">♨</div>
-          <div class="card-status status-live">Live</div>
-        </div>
-        <div class="card-title">Heat Networks &amp; Heat Pumps</div>
-        <div class="card-sub">Investment considerations across ASHP, GSHP, WSHP, large-scale district, and hybrid systems. Centralised heat network vs. decentralised electricity supply customer models.</div>
-        <div class="card-tags">
-          <span class="tag live" style="border-color: var(--heat); color: var(--heat);">RIIO</span>
-          <span class="tag live" style="border-color: var(--heat); color: var(--heat);">Ofgem Heat</span>
-          <span class="tag live" style="border-color: var(--heat); color: var(--heat);">HSA</span>
-          <span class="tag live" style="border-color: var(--heat); color: var(--heat);">RAB</span>
-          <span class="tag live" style="border-color: var(--heat); color: var(--heat);">DCF</span>
-        </div>
-        <div class="card-arrow">Open tool →</div>
-      </a>
+        <a class="tool-card" href="heat_framework.html" style="--card-accent: var(--heat);">
+          <div class="card-top">
+            <div class="card-icon">♨</div>
+            <div class="card-status status-live">Live</div>
+          </div>
+          <div class="card-title">Investment Considerations</div>
+          <div class="card-sub">Heat pump types across centralised and decentralised customer models. Technical, commercial, regulatory, planning, and ESG dimensions for ASHP, GSHP, WSHP, large-scale, and hybrid systems.</div>
+          <div class="card-tags">
+            <span class="tag" style="border-color:var(--heat);color:var(--heat);">5 pump types</span>
+            <span class="tag" style="border-color:var(--heat);color:var(--heat);">2 customer models</span>
+            <span class="tag" style="border-color:var(--heat);color:var(--heat);">6 consideration areas</span>
+          </div>
+          <div class="card-arrow">Open tool →</div>
+        </a>
 
-      <!-- ELECTRICITY — COMING SOON -->
-      <div class="tool-card coming-soon" style="--card-accent: var(--elec);">
-        <div class="card-top">
-          <div class="card-icon">⚡</div>
-          <div class="card-status status-soon">Coming soon</div>
+        <a class="tool-card" href="heat_regulation_timeline.html" style="--card-accent: var(--purple);">
+          <div class="card-top">
+            <div class="card-icon">⧗</div>
+            <div class="card-status status-live" style="border-color:var(--purple);color:var(--purple);">Live</div>
+          </div>
+          <div class="card-title">Regulatory Timeline</div>
+          <div class="card-sub">Ofgem heat network regulation from 2020–2030. Consumer protection, zoning, technical standards, grant funding, RAB model development, and Scottish LHEES. Hover events for LMAM implications.</div>
+          <div class="card-tags">
+            <span class="tag" style="border-color:var(--purple);color:var(--purple);">Ofgem authorisation</span>
+            <span class="tag" style="border-color:var(--purple);color:var(--purple);">HN Zoning</span>
+            <span class="tag" style="border-color:var(--purple);color:var(--purple);">LHEES Scotland</span>
+          </div>
+          <div class="card-arrow">Open tool →</div>
+        </a>
+
+        <a class="tool-card" href="heat_dcf.html" style="--card-accent: var(--accent);">
+          <div class="card-top">
+            <div class="card-icon">$</div>
+            <div class="card-status status-live">Live</div>
+          </div>
+          <div class="card-title">HSA Cashflow Model</div>
+          <div class="card-sub">Interactive DCF for heat network HSA cashflows. Adjust connections, heat demand, COP, electricity cost, WACC, and terminal value multiple. Live NPV, implied EV, EBITDA margin, and sensitivity table.</div>
+          <div class="card-tags">
+            <span class="tag" style="border-color:var(--accent);color:var(--accent);">Live DCF</span>
+            <span class="tag" style="border-color:var(--accent);color:var(--accent);">NPV / EV</span>
+            <span class="tag" style="border-color:var(--accent);color:var(--accent);">WACC sensitivity</span>
+          </div>
+          <div class="card-arrow">Open tool →</div>
+        </a>
+
+        <div class="tool-card coming-soon">
+          <div class="card-top">
+            <div class="card-icon">≈</div>
+            <div class="card-status status-soon">Coming soon</div>
+          </div>
+          <div class="card-title">WACC Comparables</div>
+          <div class="card-sub">Allowed returns across Ofgem, Ofwat, and CAA price controls. Updated as determinations are published.</div>
+          <div class="card-tags"><span class="tag">RIIO</span><span class="tag">PR24</span><span class="tag">Benchmarking</span></div>
         </div>
-        <div class="card-title">Electricity Networks</div>
-        <div class="card-sub">Last-mile electricity distribution. IDNO framework, RIIO-ED2 price control, EV & heat pump demand growth, reinforcement investment, and DNO/IDNO regulatory considerations.</div>
-        <div class="card-tags">
-          <span class="tag">IDNO</span>
-          <span class="tag">RIIO-ED2</span>
-          <span class="tag">DNO</span>
-          <span class="tag">Ofgem</span>
-        </div>
+
       </div>
-
-      <!-- GAS — COMING SOON -->
-      <div class="tool-card coming-soon" style="--card-accent: var(--gas);">
-        <div class="card-top">
-          <div class="card-icon">◎</div>
-          <div class="card-status status-soon">Coming soon</div>
-        </div>
-        <div class="card-title">Gas Networks</div>
-        <div class="card-sub">Last-mile gas distribution. RIIO-GD2 framework, declining demand trajectory, hydrogen blending transition, stranding risk, and regulatory asset base considerations.</div>
-        <div class="card-tags">
-          <span class="tag">RIIO-GD2</span>
-          <span class="tag">Hydrogen</span>
-          <span class="tag">Stranding risk</span>
-          <span class="tag">RAB</span>
-        </div>
-      </div>
-
-      <!-- WATER & WASTEWATER — COMING SOON -->
-      <div class="tool-card coming-soon" style="--card-accent: var(--water);">
-        <div class="card-top">
-          <div class="card-icon">◈</div>
-          <div class="card-status status-soon">Coming soon</div>
-        </div>
-        <div class="card-title">Water &amp; Wastewater</div>
-        <div class="card-sub">Last-mile water and wastewater infrastructure. Ofwat PR24 framework, self-lay and adoption models, infrastructure charges, and environmental compliance obligations.</div>
-        <div class="card-tags">
-          <span class="tag">Ofwat</span>
-          <span class="tag">PR24</span>
-          <span class="tag">Self-lay</span>
-          <span class="tag">Adoption</span>
-        </div>
-      </div>
-
     </div>
+
+    <!-- OTHER SECTORS -->
+    <div class="sector-group">
+      <div class="sector-label">Other Sectors — Coming Soon</div>
+      <div class="tools-grid-3">
+
+        <div class="tool-card coming-soon" style="--card-accent: var(--elec);">
+          <div class="card-top"><div class="card-icon">⚡</div><div class="card-status status-soon">Coming soon</div></div>
+          <div class="card-title">Electricity Networks</div>
+          <div class="card-sub">IDNO framework, RIIO-ED2, EV & heat pump demand growth, reinforcement investment.</div>
+          <div class="card-tags"><span class="tag">IDNO</span><span class="tag">RIIO-ED2</span><span class="tag">DNO</span></div>
+        </div>
+
+        <div class="tool-card coming-soon" style="--card-accent: var(--gas);">
+          <div class="card-top"><div class="card-icon">◎</div><div class="card-status status-soon">Coming soon</div></div>
+          <div class="card-title">Gas Networks</div>
+          <div class="card-sub">RIIO-GD2, declining demand, hydrogen blending, stranding risk, RAB considerations.</div>
+          <div class="card-tags"><span class="tag">RIIO-GD2</span><span class="tag">Hydrogen</span><span class="tag">RAB</span></div>
+        </div>
+
+        <div class="tool-card coming-soon" style="--card-accent: var(--water);">
+          <div class="card-top"><div class="card-icon">◈</div><div class="card-status status-soon">Coming soon</div></div>
+          <div class="card-title">Water &amp; Wastewater</div>
+          <div class="card-sub">Ofwat PR24, self-lay and adoption models, infrastructure charges, environmental compliance.</div>
+          <div class="card-tags"><span class="tag">Ofwat</span><span class="tag">PR24</span><span class="tag">Self-lay</span></div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <div class="footer-text">
-      <span>WeeAndy97.github.io</span><br>
-      Internal reference · Not for external distribution
-    </div>
-    <div class="footer-text" style="text-align:right;">
-      Last Mile Asset Management context<br>
-      <span>Built with Claude · Anthropic</span>
-    </div>
+    <div class="footer-text"><span>WeeAndy97.github.io</span><br>Internal reference · Not for external distribution</div>
+    <div class="footer-text" style="text-align:right;">Last Mile Asset Management context<br><span>Built with Claude · Anthropic</span></div>
   </div>
 </footer>
 
