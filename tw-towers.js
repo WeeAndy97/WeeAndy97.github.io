@@ -601,7 +601,7 @@
     set('uBuild',CUR+'m'); set('uGrant',CUR+'m'); set('uFloor',CUR+'m'); set('uCap',CUR+'m');
     html('s6intro',A.s6);
     html('breakers',A.breakers.map(function(b){ return '<li>'+b+'</li>'; }).join(''));
-    html('ixSrc',A.src+' The interactive figures are illustrative, revenue is a colocation / tenancy annuity (towers × tenancy ratio × rent per tenancy) and the returns model is a simplified DCF; not a forecast of any specific year, and not investment advice.');
+    html('ixSrc',A.src+' The interactive figures are illustrative: revenue is a colocation / tenancy annuity (towers × tenancy ratio × rent per tenancy) and the returns model is a simplified DCF; not a forecast of any specific year, and not investment advice.');
     layout(); frame(); renderModel();
   }
 
