@@ -69,7 +69,7 @@
       who: 'For students, career-switchers and new joiners: how infrastructure earns, why it carries so much debt, and why investors pay up for it.',
       steps: [
         ['energy-utilities.html', 'Energy & utility networks', 'The map of the regulated universe, why monopolies get regulated returns.'],
-        ['electricity-transmission.html', 'Electricity transmission', 'The RAB model in full, revenue decoupled from volume, watch the cash flow to the owner, not from the electrons.'],
+        ['electricity-transmission.html', 'Electricity transmission', 'The RAB model in full: revenue decoupled from volume, with the cash flowing from the asset base rather than the electrons.'],
         ['roads.html', 'Roads', 'Demand risk vs availability, the other end of the risk ladder, on real toll roads.'],
         ['hospitals.html', 'Hospitals', 'Availability PPPs, government-backed unitary charges and what deductions do.'],
         ['cashflow-model.html', 'Cash-flow & DCF model', 'Now build the intuition: every line on a slider, IRR, NPV and payback live.'],

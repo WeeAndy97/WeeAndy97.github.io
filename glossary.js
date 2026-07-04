@@ -142,7 +142,7 @@
     'demandrisk':{t:'Demand / volume risk',d:'The risk that usage (traffic, throughput, volumes) falls short of forecast, the key variable in user-pays infrastructure.',a:['demand risk','volume risk','traffic risk']},
     'shadowtoll':{t:'Shadow toll',d:'A per-user payment made by government (not the user) to the operator, linking revenue to usage without charging the public directly.',a:['shadow toll']},
     'rampup':{t:'Ramp-up',d:'The period after opening when usage and revenue build towards a mature run-rate, a high-risk phase for demand-based assets.',a:['ramp-up','ramp up']},
-    'indexation':{t:'Inflation indexation',d:'Linking revenues (or the RAB) to an inflation index such as RPI or CPIH, a defining feature of infrastructure’s inflation protection.',a:['indexation','inflation-linked','index-linked','RPI','CPIH']},
+    'indexation':{t:'Inflation indexation',d:'Linking revenues (or the RAB) to an inflation index such as RPI or CPIH: the backbone of infrastructure’s inflation protection.',a:['indexation','inflation-linked','index-linked','RPI','CPIH']},
     'brownfield':{t:'Brownfield',d:'An existing, operating asset with an established track record, lower risk and lower return than greenfield.',a:['brownfield']},
     'greenfield':{t:'Greenfield',d:'A new asset still to be built, carrying construction and ramp-up risk in exchange for higher return.',a:['greenfield']},
     'coreinfra':{t:'Core infrastructure',d:'Mature, monopolistic, contracted or regulated assets with stable, inflation-linked cash flows, the lowest-risk infrastructure style.',a:['core infrastructure','core asset']},
